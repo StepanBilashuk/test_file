@@ -28,6 +28,11 @@
 
 ## Project setup
 
+MySQL 8.0
+NestJS
+Sequelize
+OAuth 2.0 (Passport)
+
 ```bash
 $ npm install
 ```
