@@ -13,7 +13,7 @@ export const databaseProviders = [
         provide: SEQUELIZE,
         useFactory: (): SequelizeModuleOptions => ({
             autoLoadModels: true,
-            database: 'test',
+            database: process.env.DB_DATABASE,
             dialect: 'mysql',
             host: process.env.DB_HOST,
             models: [User, Folder, File, Permission, LinkCode],

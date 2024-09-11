@@ -32,7 +32,6 @@ module.exports = {
                     model: 'users',
                     key: 'id',
                 },
-                onDelete: 'SET NULL',
                 allowNull: false,
             },
             fileId: {
