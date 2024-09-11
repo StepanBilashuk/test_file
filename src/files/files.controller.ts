@@ -58,7 +58,7 @@ export class FilesController {
       throw new NotFoundException('File not found');
     }
 
-    await this.permissionsService.validateFileAccess(param.id, req.user.id, [PermissionTypes.read, PermissionTypes.write, PermissionTypes.admin]);
+    await this.permissionsService.validateFileAccess(param.id, req.user.id, [PermissionTypes.read, PermissionTypes.write, PermissionTypes.admin], file.folderId);
 
     const filePath = path.resolve('uploads', file.name);
 
@@ -87,7 +87,7 @@ export class FilesController {
       throw new NotFoundException('File not found');
     }
 
-    await this.permissionsService.validateFileAccess(param.id, req.user.id, [PermissionTypes.write, PermissionTypes.admin]);
+    await this.permissionsService.validateFileAccess(param.id, req.user.id, [PermissionTypes.write, PermissionTypes.admin], file.folderId);
 
     await file.update(body);
 
@@ -109,7 +109,7 @@ export class FilesController {
       throw new NotFoundException('File not found');
     }
 
-    await this.permissionsService.validateFileAccess(param.id, req.user.id, [PermissionTypes.write, PermissionTypes.admin]);
+    await this.permissionsService.validateFileAccess(param.id, req.user.id, [PermissionTypes.write, PermissionTypes.admin], file.folderId);
 
     const filePath = path.resolve('uploads', file.name);
 
@@ -141,7 +141,7 @@ export class FilesController {
         throw new NotFoundException('File not found');
       }
 
-      await this.permissionsService.validateFileAccess(param.id, req.user.id, [PermissionTypes.write, PermissionTypes.admin]);
+      await this.permissionsService.validateFileAccess(param.id, req.user.id, [PermissionTypes.write, PermissionTypes.admin], file.folderId);
 
       const sourceFilePath = path.resolve('uploads', file.name);
 

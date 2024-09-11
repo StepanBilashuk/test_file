@@ -24,7 +24,7 @@ export class BaseEntity extends Model {
 
     static get scopes() {
         return {
-            byId: (id: number) => ({ where: { id } }),
+            byId: (id: number) => ({ where: { id: Number(id) } }),
             pagination: (pagination: any) => ({
                 limit: Number(pagination.limit),
                 offset: Number(pagination.offset),

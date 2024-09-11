@@ -63,7 +63,7 @@ export class PermissionsService extends BaseService<Permission> {
     }
 
     if (body.fileId) {
-      await this.validateFileAccess(body.fileId, userId, PermissionTypes.admin, transaction);
+      await this.validateFileAccess(body.fileId, userId, PermissionTypes.admin, undefined, transaction);
     }
 
     return this.permissionRepository.create(
@@ -95,7 +95,7 @@ export class PermissionsService extends BaseService<Permission> {
     }
   }
 
-  async validateFileAccess(fileId: number, userId: number, types: number|number[], transaction?: Transaction): Promise<void> {
+  async validateFileAccess(fileId: number, userId: number, types: number|number[], fileFolderId?: number, transaction?: Transaction): Promise<void> {
     const file = await this.fileRepository
       .scope([
         { method: ['byId', fileId] },
@@ -107,11 +107,16 @@ export class PermissionsService extends BaseService<Permission> {
       throw new BadRequestException('File not found');
     }
 
-    const permission = await this.findOne([
+    const scopes = [
       { method: ['byUser', userId] },
-      { method: ['byFile', fileId] },
       { method: ['byPermissionLevel', types] }
-    ]);
+    ];
+
+    fileFolderId
+      ? scopes.push({ method: ['byFileOrFolder', fileId, fileFolderId] })
+      : scopes.push({ method: ['byFileId', fileId] })
+
+    const permission = await this.findOne(scopes);
 
     if (!permission) {
       throw new UnauthorizedException('Permission not found')
