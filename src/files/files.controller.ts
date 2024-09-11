@@ -129,7 +129,7 @@ export class FilesController {
     @ApiBearerAuth('Bearer')
     cloneFile(@Param() param: BaseEntityByIdDto, @Request() req) {
         return this.sequelize.transaction(async (transaction) => {
-            const file = await this.filesService.findOne(
+            const file = await this.filesService.findOne([
               { method: ['byId', param.id] }
           ], transaction);
 
