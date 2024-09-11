@@ -1,3 +1,3 @@
 export enum ValidationRules {
-  maxValidSize = 2 * 1024 * 1024
+    maxValidSize = 2 * 1024 * 1024,
 }

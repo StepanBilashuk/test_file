@@ -30,7 +30,10 @@ export class BaseService<T extends Model<T>> {
         return this.repository.scope(scopes).findOne({ transaction });
     }
 
-    async findAndCountAll(scopes = [], transaction?: Transaction): Promise<any> {
+    async findAndCountAll(
+        scopes = [],
+        transaction?: Transaction,
+    ): Promise<any> {
         return this.repository.scope(scopes).findAndCountAll({ transaction });
     }
 

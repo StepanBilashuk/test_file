@@ -8,9 +8,14 @@ import { folderProvider } from '../folders/providers/folder.provider';
 import { fileProvider } from '../files/providers/file.provider';
 
 @Module({
-  imports: [UsersModule],
-  providers: [PermissionsService, ...permissionProvider, ...folderProvider, ...fileProvider],
-  exports: [PermissionsService],
-  controllers: [PermissionsController]
+    imports: [UsersModule],
+    providers: [
+        PermissionsService,
+        ...permissionProvider,
+        ...folderProvider,
+        ...fileProvider,
+    ],
+    exports: [PermissionsService],
+    controllers: [PermissionsController],
 })
 export class PermissionsModule {}

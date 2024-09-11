@@ -1,5 +1,5 @@
 export enum PermissionTypes {
-  read = 1,
-  write,
-  admin
+    read = 1,
+    write,
+    admin,
 }

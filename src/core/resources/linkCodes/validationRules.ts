@@ -1,3 +1,3 @@
 export enum ValidationRules {
-  lengthCode = 12
+    lengthCode = 12,
 }

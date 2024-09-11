@@ -10,10 +10,10 @@ import { Op } from 'sequelize';
     searchByEmail: (query) => ({
         where: {
             email: {
-                [Op.like]: `%${query}%`
-            }
-        }
-    })
+                [Op.like]: `%${query}%`,
+            },
+        },
+    }),
 }))
 @Table({ tableName: 'users' })
 export class User extends BaseEntity {

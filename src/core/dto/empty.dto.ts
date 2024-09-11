@@ -1,1 +1,1 @@
-export class EmptyDto { }
+export class EmptyDto {}

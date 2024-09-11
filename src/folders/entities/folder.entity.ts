@@ -5,7 +5,8 @@ import {
     Table,
     BelongsTo,
     HasMany,
-    Scopes, HasOne,
+    Scopes,
+    HasOne,
 } from 'sequelize-typescript';
 import { BaseEntity } from '../../core/base/base.entity';
 import { User } from '../../users/entities/user.entity';
@@ -21,9 +22,9 @@ import { Permission } from '../../permissions/entities/permission.entity';
         include: [
             {
                 model: Folder,
-                as: 'childFolders'
-            }
-        ]
+                as: 'childFolders',
+            },
+        ],
     }),
     withFiles: (userId) => ({
         include: [
@@ -35,20 +36,20 @@ import { Permission } from '../../permissions/entities/permission.entity';
                         { isPublic: true },
                         {
                             isPublic: false,
-                            userId: userId
-                        }
-                    ]
+                            userId: userId,
+                        },
+                    ],
                 },
-                required: false
-            }
-        ]
+                required: false,
+            },
+        ],
     }),
     parentFolders: () => ({
         parentId: {
-            [Op.is]: null
-        }
+            [Op.is]: null,
+        },
     }),
-    withPermission: (userId: number, permissionLevel: number|number[]) => ({
+    withPermission: (userId: number, permissionLevel: number | number[]) => ({
         include: [
             {
                 model: Permission,
@@ -56,10 +57,10 @@ import { Permission } from '../../permissions/entities/permission.entity';
                 required: false,
                 where: {
                     userId,
-                    permissionLevel
-                }
-            }
-        ]
+                    permissionLevel,
+                },
+            },
+        ],
     }),
     withCreatorPermission: (userId: number) => ({
         where: {
@@ -68,34 +69,34 @@ import { Permission } from '../../permissions/entities/permission.entity';
                     [Op.and]: [
                         {
                             '$permission.id$': null,
-                            userId
-                        }
-                    ]
+                            userId,
+                        },
+                    ],
                 },
                 {
                     '$permission.id$': {
-                        [Op.not]: null
-                    }
-                }
-            ]
-        }
+                        [Op.not]: null,
+                    },
+                },
+            ],
+        },
     }),
     searchByFileNameAndFolders: (query: string) => ({
         where: {
             [Op.or]: [
                 {
                     '$childFolders.name$': {
-                        [Op.like]: `%${query}%`
-                    }
+                        [Op.like]: `%${query}%`,
+                    },
                 },
                 {
                     '$files.originalName$': {
-                        [Op.like]: `%${query}%`
-                    }
-                }
-            ]
-        }
-    })
+                        [Op.like]: `%${query}%`,
+                    },
+                },
+            ],
+        },
+    }),
 }))
 @Table({ tableName: 'folders' })
 export class Folder extends BaseEntity {

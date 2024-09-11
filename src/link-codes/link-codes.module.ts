@@ -7,9 +7,9 @@ import { FilesModule } from '../files/files.module';
 import { UsersModule } from '../users/users.module';
 
 @Module({
-  imports: [FoldersModule, FilesModule, UsersModule],
-  providers: [LinkCodesService, ...linkCodeProvider],
-  exports: [LinkCodesService],
-  controllers: [LinkCodesController]
+    imports: [FoldersModule, FilesModule, UsersModule],
+    providers: [LinkCodesService, ...linkCodeProvider],
+    exports: [LinkCodesService],
+    controllers: [LinkCodesController],
 })
 export class LinkCodesModule {}

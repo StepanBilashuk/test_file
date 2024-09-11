@@ -4,16 +4,15 @@ import { BaseResponsePaginationDto } from '../../core/dto/base-response-paginati
 import { UserDto } from './user.dto';
 
 export class UsersDto {
-  @IsArray()
-  @ApiProperty({ isArray: true })
-  data: UserDto[];
+    @IsArray()
+    @ApiProperty({ isArray: true })
+        data: UserDto[];
 
-  @ApiProperty()
-  pagination: BaseResponsePaginationDto;
+    @ApiProperty()
+        pagination: BaseResponsePaginationDto;
 
-  constructor(data: any[], pagination: any) {
-    this.data = data.map((item) => new UserDto(item));
-    this.pagination = new BaseResponsePaginationDto(pagination);
-  }
+    constructor(data: any[], pagination: any) {
+        this.data = data.map((item) => new UserDto(item));
+        this.pagination = new BaseResponsePaginationDto(pagination);
+    }
 }
-

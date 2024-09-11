@@ -11,7 +11,7 @@ import { PermissionsModule } from '../permissions/permissions.module';
         MulterModule.register({
             dest: './uploads',
         }),
-        PermissionsModule
+        PermissionsModule,
     ],
     controllers: [FilesController],
     providers: [FilesService, ...fileProvider],

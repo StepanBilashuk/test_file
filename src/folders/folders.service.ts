@@ -18,19 +18,23 @@ export class FoldersService extends BaseService<Folder> {
         userId: number,
         transaction?: Transaction,
     ): Promise<Folder> {
-        const getRepeatedFolder = await this.findOne([
-            { method: ['byName', body.name] },
-            { method: ['byUser', userId] },
-        ], transaction);
+        const getRepeatedFolder = await this.findOne(
+            [{ method: ['byName', body.name] }, { method: ['byUser', userId] }],
+            transaction,
+        );
 
         if (getRepeatedFolder) {
             throw new BadRequestException('Folder already exists');
         }
 
         if (body.parentId) {
-            const parentFolder = await this.findOne([
-              { method: ['byId', body.parentId] }, { method: ['byUser', userId] }
-            ], transaction);
+            const parentFolder = await this.findOne(
+                [
+                    { method: ['byId', body.parentId] },
+                    { method: ['byUser', userId] },
+                ],
+                transaction,
+            );
 
             if (!parentFolder) {
                 throw new BadRequestException('Parent folder doesnt exists');

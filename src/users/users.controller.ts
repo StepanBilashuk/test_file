@@ -1,5 +1,20 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Post, Query, Request, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
+import {
+    Body,
+    Controller,
+    Get,
+    HttpCode,
+    HttpStatus,
+    Post,
+    Query,
+    Request,
+    UseGuards,
+} from '@nestjs/common';
+import {
+    ApiBearerAuth,
+    ApiBody,
+    ApiCreatedResponse,
+    ApiTags,
+} from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserDto } from './dto/user.dto';
@@ -39,27 +54,28 @@ export class UsersController {
     @UseGuards(JwtAuthGuard)
     @HttpCode(HttpStatus.CREATED)
     async getList(
-      @Query() query: GetListUsersDto,
-      @Request() req,
+        @Query() query: GetListUsersDto,
+        @Request() req,
     ): Promise<UsersDto> {
         let items = [];
         const scopes = [];
 
         if (query.query) {
-            scopes.push({ method: ['searchByEmail', query.query] })
+            scopes.push({ method: ['searchByEmail', query.query] });
         }
 
         scopes.push('notDeleted');
         const count = await this.usersService.count(scopes);
 
         if (count) {
-            scopes.push(
-              { method: ['pagination', query] }
-            )
+            scopes.push({ method: ['pagination', query] });
 
             items = await this.usersService.findAll(scopes);
         }
 
-        return new UsersDto(items, PaginationHelper.buildPagination(query, count));
+        return new UsersDto(
+            items,
+            PaginationHelper.buildPagination(query, count),
+        );
     }
 }

@@ -8,20 +8,15 @@ import { UpdateFileDto } from './dto/update-file.dto';
 
 @Injectable()
 export class FilesService extends BaseService<File> {
-  constructor(
-    @Inject(FILE_REPOSITORY) private fileRepository: typeof File,
-  ) {
-    super(fileRepository);
-  }
+    constructor(@Inject(FILE_REPOSITORY) private fileRepository: typeof File) {
+        super(fileRepository);
+    }
 
-  async create(
-    body: CreateFileDto,
-    userId: number,
-    transaction?: Transaction,
-  ): Promise<File> {
-    return this.fileRepository.create(
-      { ...body, userId },
-      { transaction },
-    );
-  }
+    async create(
+        body: CreateFileDto,
+        userId: number,
+        transaction?: Transaction,
+    ): Promise<File> {
+        return this.fileRepository.create({ ...body, userId }, { transaction });
+    }
 }

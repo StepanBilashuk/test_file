@@ -2,8 +2,8 @@ import { FILE_REPOSITORY } from '../../core/resources/database/databaseEntities.
 import { File } from '../entities/file.entity';
 
 export const fileProvider = [
-  {
-    provide: FILE_REPOSITORY,
-    useValue: File,
-  },
+    {
+        provide: FILE_REPOSITORY,
+        useValue: File,
+    },
 ];

@@ -6,7 +6,8 @@ import {
     UseGuards,
     Request,
     Req,
-    HttpStatus, Res,
+    HttpStatus,
+    Res,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { ApiBearerAuth, ApiBody, ApiCreatedResponse } from '@nestjs/swagger';
@@ -19,7 +20,6 @@ import { TokenDto } from './dto/token.dto';
 import { UserDto } from '../users/dto/user.dto';
 import { JwtAuthGuard } from './guards/jwt.guard';
 import { GoogleOauthGuard } from './guards/google.guard';
-import { EmptyDto } from '../core/dto/empty.dto';
 import * as process from 'node:process';
 
 @Controller('auth')
@@ -57,10 +57,7 @@ export class AuthController {
 
     @Get('google/callback')
     @UseGuards(GoogleOauthGuard)
-    async googleAuthRedirect(
-      @Req() req,
-      @Res() res: Response,
-    ) {
+    async googleAuthRedirect(@Req() req, @Res() res: Response) {
         const { jwt } = req.user;
 
         res.setHeader('Authorization', `Bearer ${jwt.accessToken}`);

@@ -9,6 +9,6 @@ import { PermissionsModule } from '../permissions/permissions.module';
     imports: [FilesModule, PermissionsModule],
     controllers: [FoldersController],
     providers: [FoldersService, ...folderProvider],
-    exports: [FoldersService]
+    exports: [FoldersService],
 })
 export class FoldersModule {}

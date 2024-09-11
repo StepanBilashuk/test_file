@@ -2,8 +2,8 @@ import { PERMISSION_REPOSITORY } from '../../core/resources/database/databaseEnt
 import { Permission } from '../entities/permission.entity';
 
 export const permissionProvider = [
-  {
-    provide: PERMISSION_REPOSITORY,
-    useValue: Permission,
-  },
+    {
+        provide: PERMISSION_REPOSITORY,
+        useValue: Permission,
+    },
 ];

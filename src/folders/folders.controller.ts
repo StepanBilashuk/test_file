@@ -1,16 +1,24 @@
 import {
     BadRequestException,
     Body,
-    Controller, Get,
+    Controller,
+    Get,
     HttpCode,
-    HttpStatus, NotFoundException, Param, ParseFilePipeBuilder,
-    Post, Query,
-    Request, UploadedFile,
-    UseGuards, UseInterceptors,
+    HttpStatus,
+    NotFoundException,
+    Param,
+    ParseFilePipeBuilder,
+    Post,
+    Query,
+    Request,
+    UploadedFile,
+    UseGuards,
+    UseInterceptors,
 } from '@nestjs/common';
 import {
     ApiBearerAuth,
-    ApiBody, ApiConsumes,
+    ApiBody,
+    ApiConsumes,
     ApiCreatedResponse,
     ApiTags,
 } from '@nestjs/swagger';
@@ -64,8 +72,16 @@ export class FoldersController {
     ): Promise<FolderDto> {
         return this.sequelize.transaction(async (transaction) => {
             if (body.parentId) {
-                await this.permissionsService.validateFolderAccess(body.parentId, req.user.id, [PermissionTypes.write, PermissionTypes.admin], transaction);
-                await this.foldersService.findOneByPk(body.parentId, transaction);
+                await this.permissionsService.validateFolderAccess(
+                    body.parentId,
+                    req.user.id,
+                    [PermissionTypes.write, PermissionTypes.admin],
+                    transaction,
+                );
+                await this.foldersService.findOneByPk(
+                    body.parentId,
+                    transaction,
+                );
             }
 
             const folder = await this.foldersService.create(
@@ -74,7 +90,12 @@ export class FoldersController {
                 transaction,
             );
 
-            await this.permissionsService.createAdminPermission(req.user.id, folder.id, undefined, transaction);
+            await this.permissionsService.createAdminPermission(
+                req.user.id,
+                folder.id,
+                undefined,
+                transaction,
+            );
             return new FolderDto(folder);
         });
     }
@@ -87,29 +108,40 @@ export class FoldersController {
     @UseGuards(JwtAuthGuard)
     @HttpCode(HttpStatus.CREATED)
     async getList(
-      @Query() query: BaseRequestPaginationDto,
-      @Request() req,
+        @Query() query: BaseRequestPaginationDto,
+        @Request() req,
     ): Promise<FoldersDto> {
         const userId = req.user.id;
         let items = [];
 
         const scopes = [
             'parentFolders',
-            { method: ['withPermission', userId, [PermissionTypes.read, PermissionTypes.write, PermissionTypes.admin] ] },
-            { method: ['withCreatorPermission', userId ]}
+            {
+                method: [
+                    'withPermission',
+                    userId,
+                    [
+                        PermissionTypes.read,
+                        PermissionTypes.write,
+                        PermissionTypes.admin,
+                    ],
+                ],
+            },
+            { method: ['withCreatorPermission', userId] },
         ];
 
         const count = await this.foldersService.count(scopes);
 
         if (count) {
-            scopes.push(
-              { method: ['pagination', query] }
-            )
+            scopes.push({ method: ['pagination', query] });
 
             items = await this.foldersService.findAll(scopes);
         }
 
-        return new FoldersDto(items, PaginationHelper.buildPagination(query, count));
+        return new FoldersDto(
+            items,
+            PaginationHelper.buildPagination(query, count),
+        );
     }
 
     @Get(':id/list')
@@ -120,27 +152,40 @@ export class FoldersController {
     @UseGuards(JwtAuthGuard)
     @HttpCode(HttpStatus.CREATED)
     async getOne(
-      @Param() params: BaseEntityByIdDto,
-      @Query() query: GetListFoldersDto,
-      @Request() req,
+        @Param() params: BaseEntityByIdDto,
+        @Query() query: GetListFoldersDto,
+        @Request() req,
     ): Promise<GetFilesAndFoldersDto> {
         const scopes = [
-            { method: ['byId', params.id ] },
+            { method: ['byId', params.id] },
             'withChildFolders',
             { method: ['withFiles', req.user.id] },
             { method: ['subQuery', false] },
-            { method: ['pagination', query] }
+            { method: ['pagination', query] },
         ];
 
         if (query.query) {
-            scopes.push({ method: ['searchByFileNameAndFolders', query.query] });
+            scopes.push({
+                method: ['searchByFileNameAndFolders', query.query],
+            });
         }
 
-        await this.permissionsService.validateFolderAccess(params.id, req.user.id, [PermissionTypes.write, PermissionTypes.admin, PermissionTypes.read]);
+        await this.permissionsService.validateFolderAccess(
+            params.id,
+            req.user.id,
+            [
+                PermissionTypes.write,
+                PermissionTypes.admin,
+                PermissionTypes.read,
+            ],
+        );
 
         const parentFolder = await this.foldersService.findAndCountAll(scopes);
 
-        return new GetFilesAndFoldersDto(parentFolder.rows[0], PaginationHelper.buildPagination(query, parentFolder.count))
+        return new GetFilesAndFoldersDto(
+            parentFolder.rows[0],
+            PaginationHelper.buildPagination(query, parentFolder.count),
+        );
     }
 
     @Get(':code/code')
@@ -151,14 +196,13 @@ export class FoldersController {
     @UseGuards(JwtAuthGuard)
     @HttpCode(HttpStatus.CREATED)
     async getFolderByGoogle(
-      @Param() params: BaseEntityByIdDto,
-      @Request() req,
+        @Param() params: BaseEntityByIdDto,
+        @Request() req,
     ): Promise<FolderDto> {
-
         const folder = await this.foldersService.findOne([
             { method: ['byId', params.id] },
             'withChildFolders',
-            'withFiles'
+            'withFiles',
         ]);
 
         return new FolderDto(folder);
@@ -180,25 +224,28 @@ export class FoldersController {
                 },
                 body: {
                     type: 'string',
-                    description: 'JSON string representing additional form data'
-                }
+                    description:
+                        'JSON string representing additional form data',
+                },
             },
         },
     })
     @UseInterceptors(
-      FileInterceptor('file', {
-          storage: memoryStorage()
-      })
+        FileInterceptor('file', {
+            storage: memoryStorage(),
+        }),
     )
     async uploadFile(
-      @Param() params: BaseEntityByIdDto,
-      @Body() body: any,
-      @Request() req,
-      @UploadedFile(
-        new ParseFilePipeBuilder()
-          .addMaxSizeValidator({ maxSize: ValidationRules.maxValidSize })
-          .build({ errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY }),
-      )
+        @Param() params: BaseEntityByIdDto,
+        @Body() body: any,
+        @Request() req,
+        @UploadedFile(
+            new ParseFilePipeBuilder()
+                .addMaxSizeValidator({ maxSize: ValidationRules.maxValidSize })
+                .build({
+                    errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+                }),
+        )
         file,
     ) {
         return this.sequelize.transaction(async (transaction) => {
@@ -210,13 +257,13 @@ export class FoldersController {
                 throw new BadRequestException('Invalid JSON format in body');
             }
 
-            const fileName = FileHelper.generateFileName(file.originalname)
+            const fileName = FileHelper.generateFileName(file.originalname);
 
             const uploadFileDto = plainToInstance(CreateFileDto, {
                 ...parsedBody,
                 name: fileName,
                 originalName: file.originalname,
-                folderId: params.id
+                folderId: params.id,
             });
 
             const errors = await validate(uploadFileDto);
@@ -225,24 +272,39 @@ export class FoldersController {
                 throw new BadRequestException('Validation failed');
             }
 
-            const folder = await this.foldersService.findOne([
-                { method: ['byId', params.id] }
-            ], transaction);
+            const folder = await this.foldersService.findOne(
+                [{ method: ['byId', params.id] }],
+                transaction,
+            );
 
             if (!folder) {
                 throw new NotFoundException('Folder not found');
             }
 
-            await this.permissionsService.validateFolderAccess(params.id, req.user.id, [PermissionTypes.write, PermissionTypes.admin], transaction);
+            await this.permissionsService.validateFolderAccess(
+                params.id,
+                req.user.id,
+                [PermissionTypes.write, PermissionTypes.admin],
+                transaction,
+            );
 
-            const createdFile = await this.filesService.create({
-                isPublic: parsedBody.isPublic,
-                originalName: file.originalname,
-                name: fileName,
-                folderId: params.id,
-            }, req.user.id, transaction);
+            const createdFile = await this.filesService.create(
+                {
+                    isPublic: parsedBody.isPublic,
+                    originalName: file.originalname,
+                    name: fileName,
+                    folderId: params.id,
+                },
+                req.user.id,
+                transaction,
+            );
 
-            await this.permissionsService.createAdminPermission(req.user.id, undefined, createdFile.id, transaction);
+            await this.permissionsService.createAdminPermission(
+                req.user.id,
+                undefined,
+                createdFile.id,
+                transaction,
+            );
 
             const uploadPath = './uploads';
             if (!fs.existsSync(uploadPath)) {

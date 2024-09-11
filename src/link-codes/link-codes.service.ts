@@ -10,26 +10,27 @@ import { ValidationRules } from '../core/resources/linkCodes/validationRules';
 
 @Injectable()
 export class LinkCodesService extends BaseService<LinkCode> {
-  constructor(
-    @Inject(LINK_CODE_REPOSITORY) private linkCodeRepository: typeof LinkCode,
-  ) {
-    super(linkCodeRepository);
-  }
+    constructor(
+        @Inject(LINK_CODE_REPOSITORY)
+        private linkCodeRepository: typeof LinkCode,
+    ) {
+        super(linkCodeRepository);
+    }
 
-  async create(
-    body: CreateLinkCodeDto,
-    userId: number,
-    transaction?: Transaction,
-  ): Promise<LinkCode> {
-    const code = this.generateUniqueCode(ValidationRules.lengthCode)
+    async create(
+        body: CreateLinkCodeDto,
+        userId: number,
+        transaction?: Transaction,
+    ): Promise<LinkCode> {
+        const code = this.generateUniqueCode(ValidationRules.lengthCode);
 
-    return this.linkCodeRepository.create(
-      { ...body, code, userId },
-      { transaction },
-    );
-  }
+        return this.linkCodeRepository.create(
+            { ...body, code, userId },
+            { transaction },
+        );
+    }
 
-  generateUniqueCode(length: number): string {
-    return randomBytes(length).toString('hex').slice(0, length);
-  }
+    generateUniqueCode(length: number): string {
+        return randomBytes(length).toString('hex').slice(0, length);
+    }
 }

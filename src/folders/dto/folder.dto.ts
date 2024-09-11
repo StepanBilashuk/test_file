@@ -12,8 +12,8 @@ export class FolderDto extends BaseDto {
             ? data.childFolders.map((folder) => new FolderDto(folder))
             : undefined;
         this.files = data.files?.length
-        ? data.files.map((file) => new FileDto(file))
-        : undefined;
+            ? data.files.map((file) => new FileDto(file))
+            : undefined;
     }
     @ApiProperty({ type: () => String, required: true })
     @IsString()

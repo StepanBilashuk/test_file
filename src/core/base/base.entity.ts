@@ -30,7 +30,7 @@ export class BaseEntity extends Model {
                 offset: Number(pagination.offset),
             }),
             subQuery: (isWithSubQuery: boolean) => ({
-                subQuery: isWithSubQuery
+                subQuery: isWithSubQuery,
             }),
             notDeleted: () => ({
                 where: { isDeleted: false },
